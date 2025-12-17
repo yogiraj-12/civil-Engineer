@@ -65,16 +65,14 @@ const Hero: React.FC<HeroProps> = ({ setView }) => {
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (typeof gsap === 'undefined') return;
+    if (typeof gsap === 'undefined' || window.innerWidth < 768) return;
     
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
     
-    // Calculate normalized mouse position (-0.5 to 0.5)
     const xPos = (clientX / innerWidth - 0.5);
     const yPos = (clientY / innerHeight - 0.5);
 
-    // Parallax Text Layer
     gsap.to(textRef.current, {
       x: xPos * 40,
       y: yPos * 40,
@@ -82,11 +80,10 @@ const Hero: React.FC<HeroProps> = ({ setView }) => {
       ease: "power2.out"
     });
 
-    // Parallax Background Layer (Opposite direction for depth)
     gsap.to(bgRef.current, {
       x: -xPos * 20,
       y: -yPos * 20,
-      rotation: xPos * 1, // Slight rotation
+      rotation: xPos * 1,
       duration: 2,
       ease: "power2.out"
     });
@@ -96,7 +93,7 @@ const Hero: React.FC<HeroProps> = ({ setView }) => {
     <div 
       ref={containerRef} 
       onMouseMove={handleMouseMove}
-      className="relative w-full h-screen bg-[#050505] text-white overflow-hidden cursor-none md:cursor-default"
+      className="relative w-full h-screen bg-[#050505] text-white overflow-hidden"
     >
       {/* Animated Structural Grid Lines */}
       <div className="absolute top-0 left-12 md:left-24 w-[1px] h-full bg-white/10 z-10 structural-line-v hidden md:block"></div>
@@ -117,45 +114,51 @@ const Hero: React.FC<HeroProps> = ({ setView }) => {
       <div className="relative z-20 w-full h-full flex flex-col justify-center px-6 md:px-24">
         
         {/* Main Typography */}
-        <div ref={textRef} className="max-w-[95vw] relative">
-          <div className="absolute -top-12 left-0 text-[10px] md:text-xs font-mono text-yellow-600 uppercase tracking-[0.3em] hero-meta flex items-center gap-2">
-            <span className="w-8 h-[1px] bg-yellow-600"></span>
+        <div ref={textRef} className="max-w-[95vw] relative pt-12 md:pt-0">
+          <div className="absolute -top-8 md:-top-16 left-0 text-[8px] md:text-xs font-mono text-yellow-600 uppercase tracking-[0.3em] hero-meta flex items-center gap-2">
+            <span className="w-4 md:w-8 h-[1px] bg-yellow-600"></span>
             <span>Engineering Excellence</span>
           </div>
 
-          <h1 className="text-[13vw] md:text-[11vw] font-serif leading-[0.8] tracking-tighter text-white/90 mix-blend-overlay">
+          <h1 className="text-[12vw] md:text-[9vw] font-serif leading-[0.95] tracking-tight text-white/90 mix-blend-overlay">
              <span className="block overflow-hidden"><span className="hero-char inline-block">S</span><span className="hero-char inline-block">T</span><span className="hero-char inline-block">R</span><span className="hero-char inline-block">U</span><span className="hero-char inline-block">C</span><span className="hero-char inline-block">T</span><span className="hero-char inline-block">U</span><span className="hero-char inline-block">R</span><span className="hero-char inline-block">E</span></span>
           </h1>
           
-          <h1 className="mastery-text text-[13vw] md:text-[11vw] font-serif leading-[0.8] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-white bg-[length:200%_auto] ml-[10vw]">
+          <h1 className="mastery-text text-[12vw] md:text-[9vw] font-serif leading-[0.95] tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-white bg-[length:200%_auto] ml-[6vw] md:ml-[10vw]">
             <span className="block overflow-hidden"><span className="hero-char inline-block">M</span><span className="hero-char inline-block">A</span><span className="hero-char inline-block">S</span><span className="hero-char inline-block">T</span><span className="hero-char inline-block">E</span><span className="hero-char inline-block">R</span><span className="hero-char inline-block">Y</span></span>
           </h1>
         </div>
 
-        {/* Floating Sidebar Details */}
-        <div className="hero-sidebar absolute right-0 top-1/2 -translate-y-1/2 w-64 md:w-80 bg-white/5 backdrop-blur-md border-l border-white/10 p-8 hidden md:flex flex-col gap-8 z-30">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-yellow-500 mb-2 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                Headquarters
-              </p>
-              <p className="text-2xl font-serif">Pune, MH</p>
+        {/* Sidebar - Positioned for mobile at bottom or hidden */}
+        <div className="hero-sidebar md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 w-full md:w-80 bg-white/5 backdrop-blur-md border border-white/10 md:border-l p-6 md:p-8 mt-16 md:mt-0 flex flex-col gap-6 md:gap-8 z-30 rounded-lg md:rounded-none">
+            <div className="flex md:block justify-between items-start">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-yellow-500 mb-1 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                  Pune, MH
+                </p>
+                <p className="text-xl md:text-2xl font-serif">Main Office</p>
+              </div>
+              <div className="md:hidden">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-1">Since 2008</p>
+                <p className="text-lg font-serif">15+ Years</p>
+              </div>
             </div>
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2">Since 2008</p>
+            <div className="hidden md:block">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2">Philosophy</p>
               <p className="text-sm text-gray-300 leading-relaxed font-light">
                 Delivering high-precision civil engineering solutions for industrial and residential landmarks.
               </p>
             </div>
             <button 
               onClick={() => setView(AppView.BOOKING)}
-              className="mt-4 py-3 border border-white/20 text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 group"
+              className="w-full py-4 bg-white text-black font-bold border border-white/20 text-[10px] uppercase tracking-widest hover:bg-transparent hover:text-white transition-all duration-300 group"
             >
-              <span className="group-hover:mr-2 transition-all">Consult Now</span>
+              Consult Now
             </button>
         </div>
 
-        <div className="absolute bottom-12 left-6 md:left-24 flex items-center gap-4 opacity-60 hero-meta">
+        <div className="hidden md:flex absolute bottom-12 left-24 items-center gap-4 opacity-60 hero-meta">
            <div className="p-2 border border-white/20 rounded-full animate-bounce">
              <ArrowDown size={14} />
            </div>
