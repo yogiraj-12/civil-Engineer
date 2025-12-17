@@ -10,7 +10,8 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ setView }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const textContainerRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLImageElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     if (typeof gsap === 'undefined') return;
@@ -18,99 +19,148 @@ const Hero: React.FC<HeroProps> = ({ setView }) => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
 
-      // Background scale and overlay fade
-      tl.fromTo(".hero-bg", 
-        { scale: 1.1, filter: 'grayscale(100%)' },
-        { scale: 1, filter: 'grayscale(0%)', duration: 2, ease: "power2.inOut" }
+      // 1. Dramatic Background Reveal
+      tl.fromTo(bgRef.current, 
+        { scale: 1.4, filter: "blur(15px)", opacity: 0 },
+        { scale: 1.1, filter: "blur(0px)", opacity: 0.5, duration: 2, ease: "power2.inOut" }
       );
 
-      // Text Reveal
-      tl.fromTo(".hero-line",
-        { y: "100%", opacity: 0, rotate: 2 },
-        { y: "0%", opacity: 1, rotate: 0, duration: 1.2, stagger: 0.15, ease: "power4.out" },
+      // 2. Structural Lines Drawing Animation
+      tl.fromTo(".structural-line-v", 
+        { scaleY: 0, transformOrigin: "top" }, 
+        { scaleY: 1, duration: 1.5, ease: "expo.inOut", stagger: 0.2 },
+        "-=1.5"
+      );
+      tl.fromTo(".structural-line-h", 
+        { scaleX: 0, transformOrigin: "left" }, 
+        { scaleX: 1, duration: 1.5, ease: "expo.inOut" },
         "-=1.5"
       );
 
-      // Subtext and lines
-      tl.fromTo([".hero-sub", ".hero-divider"],
-        { opacity: 0, x: -20 },
-        { opacity: 1, x: 0, duration: 1, ease: "power2.out" },
+      // 3. Text Stagger Reveal
+      tl.fromTo(".hero-char",
+        { y: 150, rotate: 5, opacity: 0 },
+        { y: 0, rotate: 0, opacity: 1, stagger: 0.04, duration: 1.2, ease: "power4.out" },
+        "-=1"
+      );
+
+      // 4. Sidebar & Details Fade In
+      tl.fromTo([".hero-sidebar", ".hero-meta"],
+        { x: 30, opacity: 0 },
+        { x: 0, opacity: 1, duration: 1, ease: "power2.out", stagger: 0.2 },
         "-=0.5"
       );
+
+      // 5. Continuous Gradient Pulse for "Mastery"
+      gsap.to(".mastery-text", {
+        backgroundPosition: "200% center",
+        duration: 4,
+        ease: "none",
+        repeat: -1
+      });
 
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (typeof gsap === 'undefined') return;
+    
+    const { clientX, clientY } = e;
+    const { innerWidth, innerHeight } = window;
+    
+    // Calculate normalized mouse position (-0.5 to 0.5)
+    const xPos = (clientX / innerWidth - 0.5);
+    const yPos = (clientY / innerHeight - 0.5);
+
+    // Parallax Text Layer
+    gsap.to(textRef.current, {
+      x: xPos * 40,
+      y: yPos * 40,
+      duration: 1.5,
+      ease: "power2.out"
+    });
+
+    // Parallax Background Layer (Opposite direction for depth)
+    gsap.to(bgRef.current, {
+      x: -xPos * 20,
+      y: -yPos * 20,
+      rotation: xPos * 1, // Slight rotation
+      duration: 2,
+      ease: "power2.out"
+    });
+  };
+
   return (
-    <div ref={containerRef} className="relative w-full h-screen bg-[#0f0f0f] text-white overflow-hidden flex flex-col justify-center">
-      
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-black/60 z-10"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] z-10 opacity-30"></div> {/* Grid */}
+    <div 
+      ref={containerRef} 
+      onMouseMove={handleMouseMove}
+      className="relative w-full h-screen bg-[#050505] text-white overflow-hidden cursor-none md:cursor-default"
+    >
+      {/* Animated Structural Grid Lines */}
+      <div className="absolute top-0 left-12 md:left-24 w-[1px] h-full bg-white/10 z-10 structural-line-v hidden md:block"></div>
+      <div className="absolute top-0 right-12 md:right-32 w-[1px] h-full bg-white/10 z-10 structural-line-v hidden md:block"></div>
+      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-white/10 z-10 structural-line-h"></div>
+
+      {/* Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black z-10"></div>
         <img 
+          ref={bgRef}
           src="https://images.unsplash.com/photo-1481026469463-66327c86e544?q=80&w=2108&auto=format&fit=crop" 
           alt="Engineering Structure" 
-          className="hero-bg w-full h-full object-cover opacity-60"
+          className="w-full h-full object-cover opacity-50 grayscale contrast-125 scale-110"
         />
       </div>
 
-      <div className="relative z-20 container max-w-[1920px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full pt-20">
+      <div className="relative z-20 w-full h-full flex flex-col justify-center px-6 md:px-24">
         
         {/* Main Typography */}
-        <div ref={textContainerRef} className="lg:col-span-8">
-          <div className="overflow-hidden">
-            <h1 className="hero-line text-[12vw] lg:text-[7rem] font-serif leading-[0.85] tracking-tighter text-white/90">
-              STRUCTURAL
-            </h1>
+        <div ref={textRef} className="max-w-[95vw] relative">
+          <div className="absolute -top-12 left-0 text-[10px] md:text-xs font-mono text-yellow-600 uppercase tracking-[0.3em] hero-meta flex items-center gap-2">
+            <span className="w-8 h-[1px] bg-yellow-600"></span>
+            <span>Engineering Excellence</span>
           </div>
-          <div className="overflow-hidden mb-8">
-            <h1 className="hero-line text-[12vw] lg:text-[7rem] font-serif leading-[0.85] tracking-tighter text-white italic ml-2 lg:ml-12">
-              MASTERY
-            </h1>
-          </div>
+
+          <h1 className="text-[13vw] md:text-[11vw] font-serif leading-[0.8] tracking-tighter text-white/90 mix-blend-overlay">
+             <span className="block overflow-hidden"><span className="hero-char inline-block">S</span><span className="hero-char inline-block">T</span><span className="hero-char inline-block">R</span><span className="hero-char inline-block">U</span><span className="hero-char inline-block">C</span><span className="hero-char inline-block">T</span><span className="hero-char inline-block">U</span><span className="hero-char inline-block">R</span><span className="hero-char inline-block">E</span></span>
+          </h1>
           
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 lg:gap-12 ml-2 lg:ml-14">
-            <div className="hero-divider h-[1px] w-12 md:w-24 bg-yellow-600/70"></div>
-            <p className="hero-sub text-sm md:text-lg text-gray-300 font-light max-w-lg tracking-wide">
-              Civil engineering and construction firm dedicated to building the landmarks of tomorrow. Residential. Commercial. Industrial.
-            </p>
-          </div>
+          <h1 className="mastery-text text-[13vw] md:text-[11vw] font-serif leading-[0.8] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-white bg-[length:200%_auto] ml-[10vw]">
+            <span className="block overflow-hidden"><span className="hero-char inline-block">M</span><span className="hero-char inline-block">A</span><span className="hero-char inline-block">S</span><span className="hero-char inline-block">T</span><span className="hero-char inline-block">E</span><span className="hero-char inline-block">R</span><span className="hero-char inline-block">Y</span></span>
+          </h1>
         </div>
 
-        {/* Technical Sidebar / Right Side */}
-        <div className="lg:col-span-4 hidden lg:flex flex-col justify-between h-[60%] border-l border-white/10 pl-12 hero-sub opacity-0">
-           <div>
-             <span className="block text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2">Location</span>
-             <span className="block text-xl font-serif">Hyderabad, India</span>
-           </div>
-           
-           <div className="space-y-6">
-             <div>
-              <span className="block text-4xl font-light text-white">15<span className="text-yellow-600">+</span></span>
-              <span className="text-[10px] uppercase tracking-widest text-gray-500">Years of Experience</span>
-             </div>
-             <div>
-              <span className="block text-4xl font-light text-white">400<span className="text-yellow-600">k</span></span>
-              <span className="text-[10px] uppercase tracking-widest text-gray-500">Sq. Ft. Built</span>
-             </div>
-           </div>
-
-           <button 
-             onClick={() => setView(AppView.BOOKING)}
-             className="w-full py-4 bg-white text-black hover:bg-yellow-600 transition-colors uppercase text-xs font-bold tracking-widest"
-           >
-             Start Consultation
-           </button>
+        {/* Floating Sidebar Details */}
+        <div className="hero-sidebar absolute right-0 top-1/2 -translate-y-1/2 w-64 md:w-80 bg-white/5 backdrop-blur-md border-l border-white/10 p-8 hidden md:flex flex-col gap-8 z-30">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-yellow-500 mb-2 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                Headquarters
+              </p>
+              <p className="text-2xl font-serif">Pune, MH</p>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2">Since 2008</p>
+              <p className="text-sm text-gray-300 leading-relaxed font-light">
+                Delivering high-precision civil engineering solutions for industrial and residential landmarks.
+              </p>
+            </div>
+            <button 
+              onClick={() => setView(AppView.BOOKING)}
+              className="mt-4 py-3 border border-white/20 text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 group"
+            >
+              <span className="group-hover:mr-2 transition-all">Consult Now</span>
+            </button>
         </div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
-        <span className="text-[10px] uppercase tracking-[0.2em] text-white">Scroll</span>
-        <ArrowDown size={14} className="text-white" />
+        <div className="absolute bottom-12 left-6 md:left-24 flex items-center gap-4 opacity-60 hero-meta">
+           <div className="p-2 border border-white/20 rounded-full animate-bounce">
+             <ArrowDown size={14} />
+           </div>
+           <span className="text-[10px] uppercase tracking-[0.3em]">Scroll to Explore</span>
+        </div>
       </div>
     </div>
   );

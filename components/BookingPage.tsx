@@ -12,7 +12,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ goBack }) => {
     name: '',
     phone: '',
     projectType: 'Commercial Construction',
-    location: '',
+    location: 'Pune, MH',
     message: ''
   });
 
@@ -26,119 +26,127 @@ const BookingPage: React.FC<BookingPageProps> = ({ goBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] flex flex-col lg:flex-row text-white">
+    <div className="min-h-screen bg-[#050505] flex flex-col lg:flex-row text-white">
       
       {/* Left Panel - Visual */}
-      <div className="w-full lg:w-5/12 h-48 lg:h-auto relative overflow-hidden bg-neutral-900 border-r border-white/10">
-        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(68,68,68,.2)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px]"></div>
+      <div className="w-full lg:w-1/2 relative h-64 lg:h-auto overflow-hidden bg-neutral-900">
+        <div className="absolute inset-0 bg-black/40 z-10"></div>
         <img 
-          src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1931&auto=format&fit=crop" 
-          alt="Construction Site" 
-          className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
+          src="https://images.unsplash.com/photo-1531834685032-c34bf0d84c7c?q=80&w=1997&auto=format&fit=crop" 
+          alt="Abstract Architecture" 
+          className="w-full h-full object-cover opacity-60 mix-blend-overlay grayscale"
         />
-        <div className="absolute top-0 left-0 w-full p-8 lg:p-12 z-20">
+        <div className="absolute top-0 left-0 w-full p-8 z-20">
           <button 
             onClick={goBack} 
-            className="flex items-center gap-3 text-white/70 hover:text-white transition-colors w-fit text-xs uppercase tracking-widest"
+            className="flex items-center gap-3 text-white/60 hover:text-white transition-colors w-fit text-[10px] uppercase tracking-widest"
           >
-            <ArrowLeft size={16} /> Back to Studio
+            <ArrowLeft size={14} /> Return
           </button>
         </div>
         
-        <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12 z-20">
-            <h2 className="text-4xl lg:text-5xl font-serif text-white mb-4 leading-tight">Build with <br/><span className="italic text-yellow-600">Precision.</span></h2>
-            <p className="text-gray-400 text-sm font-light leading-relaxed max-w-xs">
-              Direct line to our civil engineering team. Discuss blueprints, site requirements, and project scope.
+        <div className="absolute bottom-0 left-0 w-full p-12 z-20 hidden lg:block">
+            <h2 className="text-6xl font-serif text-white mb-6">Let's Discuss <br/><span className="italic text-gray-500">The Future.</span></h2>
+            <div className="h-[1px] w-24 bg-white/20 mb-6"></div>
+            <p className="text-gray-400 text-sm font-light leading-relaxed max-w-sm">
+              We provide comprehensive civil engineering analysis before breaking ground. Ensure your project in Pune stands the test of time.
             </p>
         </div>
       </div>
 
       {/* Right Panel - Form */}
-      <div className="w-full lg:w-7/12 p-8 lg:p-24 flex items-center justify-center bg-[#0a0a0a]">
-        <div className="w-full max-w-xl">
-          <span className="text-yellow-600 text-xs font-bold tracking-[0.2em] uppercase mb-2 block">Consultation</span>
-          <h3 className="text-3xl font-serif text-white mb-2">Project Inquiry</h3>
-          <p className="text-gray-500 text-sm mb-12">Submit your project details. We analyze structural feasibility and revert.</p>
+      <div className="w-full lg:w-1/2 p-8 lg:p-24 flex items-center bg-[#0a0a0a]">
+        <div className="w-full max-w-lg mx-auto">
+          <span className="text-yellow-600 text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">Initiate Project</span>
+          <h3 className="text-4xl font-serif text-white mb-8">Consultation Request</h3>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-2 group">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest group-focus-within:text-white transition-colors">Client Name</label>
+          <form onSubmit={handleSubmit} className="space-y-10">
+            
+            <div className="group relative">
                 <input
                     required
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Enter full name"
-                    className="w-full bg-transparent border-b border-gray-800 py-3 text-white focus:outline-none focus:border-yellow-600 transition-colors placeholder:text-gray-700"
+                    className="peer w-full bg-transparent border-b border-gray-800 py-4 text-white focus:outline-none focus:border-white transition-colors placeholder-transparent"
+                    placeholder="Name"
                 />
-                </div>
+                <label className="absolute left-0 top-4 text-gray-500 text-xs uppercase tracking-widest transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:-top-4 peer-focus:text-[10px] peer-valid:-top-4 peer-valid:text-[10px]">
+                    Client Name
+                </label>
+            </div>
 
-                <div className="space-y-2 group">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest group-focus-within:text-white transition-colors">Contact Number</label>
+            <div className="group relative">
                 <input
                     required
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="+91"
-                    className="w-full bg-transparent border-b border-gray-800 py-3 text-white focus:outline-none focus:border-yellow-600 transition-colors placeholder:text-gray-700"
+                    className="peer w-full bg-transparent border-b border-gray-800 py-4 text-white focus:outline-none focus:border-white transition-colors placeholder-transparent"
+                    placeholder="Phone"
                 />
-                </div>
+                <label className="absolute left-0 top-4 text-gray-500 text-xs uppercase tracking-widest transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:-top-4 peer-focus:text-[10px] peer-valid:-top-4 peer-valid:text-[10px]">
+                    Contact Number
+                </label>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2 group">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest group-focus-within:text-white transition-colors">Scope of Work</label>
-                <select
+              <div className="group relative">
+                 <select
                   name="projectType"
                   value={formData.projectType}
                   onChange={handleChange}
-                  className="w-full bg-transparent border-b border-gray-800 py-3 text-white focus:outline-none focus:border-yellow-600 transition-colors [&>option]:bg-black"
+                  className="w-full bg-transparent border-b border-gray-800 py-4 text-white focus:outline-none focus:border-white transition-colors [&>option]:bg-black text-sm"
                 >
-                  <option>Commercial Construction</option>
-                  <option>Residential Structure</option>
-                  <option>Industrial Shed/Factory</option>
-                  <option>Structural Consultation</option>
-                  <option>Renovation & Retrofitting</option>
+                  <option>Commercial Tower</option>
+                  <option>Residential Villa</option>
+                  <option>Industrial Complex</option>
+                  <option>Civil Infrastructure</option>
                 </select>
+                <label className="absolute left-0 -top-4 text-gray-500 text-[10px] uppercase tracking-widest">
+                    Project Vertical
+                </label>
               </div>
 
-              <div className="space-y-2 group">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest group-focus-within:text-white transition-colors">Site Location</label>
+              <div className="group relative">
                 <input
                   required
                   type="text"
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  placeholder="City, District"
-                  className="w-full bg-transparent border-b border-gray-800 py-3 text-white focus:outline-none focus:border-yellow-600 transition-colors placeholder:text-gray-700"
+                  className="peer w-full bg-transparent border-b border-gray-800 py-4 text-white focus:outline-none focus:border-white transition-colors placeholder-transparent"
+                  placeholder="Location"
                 />
+                <label className="absolute left-0 top-4 text-gray-500 text-xs uppercase tracking-widest transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:-top-4 peer-focus:text-[10px] peer-valid:-top-4 peer-valid:text-[10px]">
+                    Site Location
+                </label>
               </div>
             </div>
 
-            <div className="space-y-2 group">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest group-focus-within:text-white transition-colors">Technical Requirements</label>
+            <div className="group relative">
               <textarea
                 required
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                rows={4}
-                placeholder="Details regarding plot area, number of floors, soil type, architectural drawings status..."
-                className="w-full bg-transparent border-b border-gray-800 py-3 text-white focus:outline-none focus:border-yellow-600 transition-colors placeholder:text-gray-700 resize-none"
+                rows={3}
+                className="peer w-full bg-transparent border-b border-gray-800 py-4 text-white focus:outline-none focus:border-white transition-colors placeholder-transparent resize-none"
+                placeholder="Message"
               />
+              <label className="absolute left-0 top-4 text-gray-500 text-xs uppercase tracking-widest transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:-top-4 peer-focus:text-[10px] peer-valid:-top-4 peer-valid:text-[10px]">
+                  Project Brief / Requirements
+              </label>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-8">
                 <button
                 type="submit"
-                className="w-full md:w-auto px-12 py-4 bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-yellow-600 hover:text-white transition-all duration-300 flex items-center justify-center gap-4"
+                className="w-full py-5 border border-white/20 text-white hover:bg-white hover:text-black transition-all duration-500 uppercase text-[10px] tracking-[0.2em] font-bold flex items-center justify-center gap-4"
                 >
-                <span>Request Engineer</span>
+                <span>Submit Inquiry</span>
                 <Send size={14} />
                 </button>
             </div>
